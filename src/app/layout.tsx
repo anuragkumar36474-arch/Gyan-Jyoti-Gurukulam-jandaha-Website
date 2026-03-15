@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import PWARegistration from "@/components/PWARegistration";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,6 +19,13 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Gyan Jyoti Gurukulam - Empowering Young Minds",
   description: "Empowering young minds with knowledge and values since 2000 in Jandaha, Vaishali.",
+  themeColor: "#050508",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Gyan Jyoti",
+  },
 };
 
 export default function RootLayout({
@@ -34,6 +42,7 @@ export default function RootLayout({
         }} />
       </head>
       <body className={`${inter.variable} ${poppins.variable} font-sans`}>
+        <PWARegistration />
         {children}
       </body>
     </html>
