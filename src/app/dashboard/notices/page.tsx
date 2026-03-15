@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Plus, Trash2, Edit2, Loader2 } from 'lucide-react';
@@ -13,10 +15,15 @@ export default function ManageNotices() {
   const supabase = createClient();
 
   useEffect(() => {
-    fetchNotices();
-  }, []);
+    if (supabase) {
+      fetchNotices();
+    } else {
+      setLoading(false);
+    }
+  }, [supabase]);
 
   async function fetchNotices() {
+    if (!supabase) return;
     setLoading(true);
     const { data, error } = await supabase.from('notices').select('*').order('created_at', { ascending: false });
     if (!error && data) setNotices(data);

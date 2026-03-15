@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Bell, Users, Camera, Activity, ArrowRight } from 'lucide-react';
@@ -12,6 +14,10 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     async function fetchStats() {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       try {
         // Run aggregations in parallel
         const [

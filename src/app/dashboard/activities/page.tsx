@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Plus, Trash2, Loader2, ImagePlus } from 'lucide-react';
@@ -19,10 +21,15 @@ export default function ManageActivities() {
   const categories = ['Sports', 'Academics', 'Cultural', 'Tour', 'Workshop', 'Other'];
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (supabase) {
+      fetchActivities();
+    } else {
+      setLoading(false);
+    }
+  }, [supabase]);
 
   async function fetchActivities() {
+    if (!supabase) return;
     setLoading(true);
     const { data, error } = await supabase.from('activities').select('*').order('date', { ascending: false });
     if (!error && data) setActivities(data);

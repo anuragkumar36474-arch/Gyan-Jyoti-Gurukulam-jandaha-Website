@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Plus, Trash2, Loader2, UploadCloud, User } from 'lucide-react';
@@ -17,10 +19,15 @@ export default function ManageTeachers() {
   const supabase = createClient();
 
   useEffect(() => {
-    fetchTeachers();
-  }, []);
+    if (supabase) {
+      fetchTeachers();
+    } else {
+      setLoading(false);
+    }
+  }, [supabase]);
 
   async function fetchTeachers() {
+    if (!supabase) return;
     setLoading(true);
     const { data, error } = await supabase.from('teachers').select('*').order('created_at', { ascending: false });
     if (!error && data) setTeachers(data);
