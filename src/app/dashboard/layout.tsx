@@ -22,12 +22,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const supabase = createClient();
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        // Since we don't assume real envs are present natively doing mock, let it pass if error to preview
-        // router.push('/teacher-login');
-      } else {
+      if (session) {
         setUser(session.user);
       }
       setLoading(false);
@@ -35,13 +37,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     checkUser();
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (session) setUser(session.user);
       else setUser(null);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth, router]);
+  }, [supabase, router]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
